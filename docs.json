@@ -16,6 +16,12 @@
           "index",
           "quickstart"
         ]
+      },
+      {
+        "group": "Overview",
+        "pages": [
+          "overview/index"
+        ]
       }
     ],
     "global": {
