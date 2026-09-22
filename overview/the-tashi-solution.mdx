@@ -1,0 +1,71 @@
+---
+title: The Tashi Solution
+description: How Tashi's three-layer architecture solves coordination at machine speed.
+---
+
+## Coordination as Infrastructure
+
+Tashi introduces a new infrastructure primitive: **real-time, leaderless edge consensus**.
+
+Traditional systems coordinate through central servers. Blockchains use leader-selection protocols (validators, sequencers) to determine transaction ordering. Tashi eliminates both models.
+
+Independent systems reach agreement in milliseconds without trusting a coordinator or waiting for leader selection. They validate outcomes cryptographically. Every coordination event produces a verifiable **Proof of Coordination** that can be checked by anyone, rewarded based on contribution, or settled on public blockchains when needed.
+
+Coordination becomes a property of the network itself, not a service rented from cloud operators.
+
+## What This Means
+
+This architectural choice has immediate consequences:
+
+- **No single server controls the network**
+- **No sequencer determines transaction order**
+- **No central authority can be compromised** to corrupt the system
+- **Participants run consensus as peers**
+- **Byzantine fault tolerance** ensures correct operation even when up to f = ⌊(n-1)/3⌋ participants behave maliciously or fail
+
+The infrastructure operates at the edge, where coordination actually happens. Warehouse robots don't send every decision to the cloud and wait for approval. AI agents don't route every message through central brokers. IoT sensors don't depend on always-on internet connectivity. They coordinate directly with peers, achieving sub-100ms consensus through local agreement.
+
+## The Three-Layer Architecture
+
+Tashi's architecture separates concerns across three layers, each solving a distinct coordination challenge:
+
+### Vertex: Where Agreement Forms
+
+The peer-to-peer consensus layer. Peers running Vertex reach consensus in milliseconds through a leaderless Byzantine fault-tolerant protocol. The output is a Proof of Coordination.
+
+**Key properties:**
+- Sub-100ms consensus (26ms with 8 peers, 103ms with 32 peers)
+- Leaderless DAG-based architecture
+- Gasless operation: no per-transaction fees
+- Fair ordering prevents front-running
+
+### Lattice: Where Coordination Scales
+
+The Decentralized Physical Infrastructure Network (DePIN). A global network of nodes validates proofs, assigns work to available capacity, maintains reputation scores, and distributes economic rewards.
+
+**Key properties:**
+- Discovery and routing without pre-known node identities
+- NAT traversal for devices behind firewalls
+- Triangulated validation prevents fraudulent rewards
+- Reputation-based job assignment rewards reliability
+
+### Arc: Where Coordination Meets the World
+
+The settlement bridge. When coordination requires public payments, settlement, or signaling, Arc bridges proofs to Ethereum, Solana, Hedera, and 20+ other blockchains.
+
+**Key properties:**
+- Only activates when blockchain settlement is needed
+- Keeps most coordination off-chain for cost and privacy
+- Deployed on 20+ networks
+
+## Coordination as Currency
+
+Each coordination event generates measurable, verifiable value. But payment models differ based on what infrastructure is consumed:
+
+- **Vertex consensus is gasless**: When peers coordinate directly through meshnets, they calculate consensus between themselves. No transaction fees. No gas costs.
+- **Lattice services are metered**: Applications pay only when they consume infrastructure: discovery, handshake coordination, NAT traversal, or tunneling bandwidth. Resource Node operators earn Reward Points based on verified work.
+- **Triangulated validation ensures honesty**: When Resource Nodes participate in meshnets, the peers validate the Resource Node's contribution. If a tunnel claims to have proxied traffic but the peers disagree, the proof fails validation.
+
+The economic insight is simple: Vertex coordination is free. Lattice infrastructure is metered. Applications pay only for services consumed. Operators earn only for work verified by peers.
+
+Coordination stops being overhead. It becomes measurable infrastructure with its own economics.
