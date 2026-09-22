@@ -32,7 +32,10 @@
           "developers/index",
           {
             "group": "Vertex for Rust",
-            "pages": []
+            "pages": [
+              "developers/vertex-rs/index",
+              "developers/vertex-rs/getting-started"
+            ]
           },
           {
             "group": "Vertex for C",
