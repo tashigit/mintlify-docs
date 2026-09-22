@@ -21,8 +21,8 @@
         "group": "Overview",
         "pages": [
           "overview/index",
-          "overview/the-tashi-solution",
           "overview/the-coordination-problem",
+          "overview/the-tashi-solution",
           "overview/why-now"
         ]
       }
