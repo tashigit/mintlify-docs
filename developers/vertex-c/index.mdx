@@ -1,0 +1,25 @@
+---
+title: Vertex for C
+description: C interface for Tashi Vertex, an embedded Byzantine fault-tolerant consensus engine.
+---
+
+C interface for **Tashi Vertex**, an embedded Byzantine fault-tolerant consensus engine based on the [Hashgraph](https://hedera.com/hh-ieee_coins_paper-200516.pdf) algorithm.
+
+Tashi Vertex uses a DAG (Directed Acyclic Graph) of cryptographically signed events and virtual voting to achieve consensus finality in under 100 milliseconds, without exchanging explicit vote messages. For a detailed explanation, see the [Vertex whitepaper](/whitepaper/technical-appendices/consensus-protocol).
+
+## Features
+
+* **Fast BFT Consensus** -- sub-100ms finality with tolerance up to `f = floor((n-1)/3)` Byzantine participants
+* **Callback-based async** -- socket binding and message receiving use non-blocking callbacks
+* **Minimal API surface** -- single header include (`tashi-vertex/tashi-vertex.h`) exposes the full API
+* **Opaque handle design** -- resource lifetime managed through opaque pointers and `tv_free()`
+* **Configurable** -- 19+ tunable engine parameters (heartbeat, latency thresholds, epoch sizing, RAM budget, etc.)
+* **Persistence** -- optional RocksDB-backed event storage across restarts (`tv_options_set_storage_path`)
+* **State sharing** -- nodes can join an already-running session and catch up via epoch state transfer instead of replaying full history (`tv_options_set_enable_state_sharing`, `tv_engine_start`'s `joining_running_session` flag)
+* **Session membership control** -- query the live voting quorum and vote to re-admit a fallen-behind creator (`tv_engine_get_active_creators`, `tv_engine_vote_add_node`)
+* **Base58 utilities** -- encode/decode keys and binary data
+
+## Links
+
+* [GitHub](https://github.com/tashigit/tashi-vertex-c)
+* [Releases](https://github.com/tashigit/tashi-vertex-c/releases)

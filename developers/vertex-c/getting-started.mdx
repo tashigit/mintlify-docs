@@ -1,0 +1,84 @@
+---
+title: Getting Started
+description: Build requirements, installation, and a quick start for the C interface.
+---
+
+## Build Requirements
+
+- **CMake** >= 4.0
+- A C99-compatible compiler
+
+## Installation
+
+### CMake (Recommended)
+
+Use CMake's `FetchContent` to automatically download the pre-built library from [GitHub Releases](https://github.com/tashigit/tashi-vertex-c/releases):
+
+```cmake
+include(FetchContent)
+
+set(TASHI_VERTEX_VERSION "0.14.0")
+set(TASHI_VERTEX_URL "https://github.com/tashigit/tashi-vertex-c/releases/download/v${TASHI_VERTEX_VERSION}/tashi-vertex-${TASHI_VERTEX_VERSION}.zip")
+
+FetchContent_Declare(
+    TASHI_VERTEX
+    URL ${TASHI_VERTEX_URL}
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(TASHI_VERTEX)
+
+# Create an imported library target
+add_library(TASHI_VERTEX SHARED IMPORTED GLOBAL)
+
+set(TASHI_VERTEX_LIB_DIR "${tashi_vertex_SOURCE_DIR}/lib")
+
+if(WIN32)
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/tashi-vertex.dll")
+elseif(APPLE)
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/libtashi-vertex.dylib")
+else()
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/libtashi-vertex.so")
+endif()
+```
+
+Then link against it in your target:
+
+```cmake
+target_include_directories(my_app PRIVATE "${tashi_vertex_SOURCE_DIR}/include")
+target_link_libraries(my_app PRIVATE TASHI_VERTEX)
+```
+
+### Manual
+
+Download the latest `.zip` release from [GitHub Releases](https://github.com/tashigit/tashi-vertex-c/releases) and extract it. The archive contains `include/` and `lib/` directories that you can integrate into your build system of choice.
+
+## Quick Start
+
+Generate a keypair for your node:
+
+```c
+#include <stdio.h>
+#include <tashi-vertex/tashi-vertex.h>
+
+int main() {
+  TVKeySecret secret;
+  tv_key_secret_generate(&secret);
+
+  TVKeyPublic public;
+  tv_key_secret_to_public(&secret, &public);
+
+  // encode to Base58 for display
+  uint8_t der[TV_KEY_SECRET_DER_LENGTH];
+  tv_key_secret_to_der(&secret, der, TV_KEY_SECRET_DER_LENGTH);
+
+  char b58[tv_base58_encode_length(TV_KEY_SECRET_DER_LENGTH) + 1];
+  size_t b58_len = sizeof(b58);
+  tv_base58_encode(der, TV_KEY_SECRET_DER_LENGTH, b58, &b58_len);
+  b58[b58_len] = '\0';
+
+  printf("Secret: %s\n", b58);
+
+  return 0;
+}
+```

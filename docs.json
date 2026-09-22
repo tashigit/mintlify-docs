@@ -41,7 +41,12 @@
           },
           {
             "group": "Vertex for C",
-            "pages": []
+            "pages": [
+              "developers/vertex-c/index",
+              "developers/vertex-c/getting-started",
+              "developers/vertex-c/api-reference",
+              "developers/vertex-c/examples"
+            ]
           }
         ]
       }

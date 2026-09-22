@@ -1,0 +1,166 @@
+---
+title: Examples
+description: Runnable demos for the C interface.
+---
+
+The [examples directory](https://github.com/tashigit/tashi-vertex-c/tree/main/examples) contains runnable demos.
+
+## Building
+
+Build all examples with Make:
+
+```sh
+cd examples
+make
+```
+
+## key-generate
+
+Generate a new Ed25519 keypair:
+
+```sh
+make run-key-generate
+```
+
+```c
+#include <stdio.h>
+#include <tashi-vertex/tashi-vertex.h>
+
+int main() {
+  TVKeySecret secret;
+  tv_key_secret_generate(&secret);
+
+  TVKeyPublic public;
+  tv_key_secret_to_public(&secret, &public);
+
+  uint8_t der[TV_KEY_SECRET_DER_LENGTH];
+  tv_key_secret_to_der(&secret, der, TV_KEY_SECRET_DER_LENGTH);
+
+  char b58[tv_base58_encode_length(TV_KEY_SECRET_DER_LENGTH) + 1];
+  size_t b58_len = sizeof(b58);
+  tv_base58_encode(der, TV_KEY_SECRET_DER_LENGTH, b58, &b58_len);
+  b58[b58_len] = '\0';
+
+  printf("Secret: %s\n", b58);
+
+  return 0;
+}
+```
+
+## key-parse
+
+Parse Base58-encoded keys:
+
+```sh
+make run-key-parse
+```
+
+## pingback
+
+A full multi-peer consensus network with transaction exchange. Three nodes each send a transaction and reach consensus ordering.
+
+### Setup
+
+Generate keypairs for three nodes:
+
+```sh
+make run-key-generate  # run 3 times, save each secret/public key
+```
+
+### Run
+
+Start each node in a separate terminal, passing the other two nodes as peers:
+
+```sh
+make run-pingback ARGS="-B 127.0.0.1:8001 -K <secret_key> -P <peer2_public_key> 127.0.0.1:8002 -P <peer3_public_key> 127.0.0.1:8003"
+```
+
+### Simplified Code
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <tashi-vertex/tashi-vertex.h>
+
+TVContext* context = NULL;
+TVEngine* engine = NULL;
+
+void handle_message_recv(TVResult result, TVMessage message, void* data, void* user_data) {
+  switch (message) {
+    case TV_MESSAGE_NONE:
+      return;  // shutting down
+
+    case TV_MESSAGE_EVENT: {
+      TVEvent* event = (TVEvent*)data;
+      size_t transactions = 0;
+      tv_event_get_transaction_count(event, &transactions);
+
+      if (transactions != 0) {
+        printf(" > Received EVENT with %zu transaction(s)\n", transactions);
+      }
+
+      tv_free(event);
+      break;
+    }
+
+    case TV_MESSAGE_SYNC_POINT: {
+      TVSyncPoint* sync_point = (TVSyncPoint*)data;
+      tv_free(sync_point);
+      printf(" > Received SYNC POINT\n");
+      break;
+    }
+  }
+
+  // listen for the next message
+  tv_message_recv(engine, handle_message_recv, NULL);
+}
+
+void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
+  TVOptions* options = NULL;
+  tv_options_new(&options);
+
+  TVKeySecret secret = /* ... */;
+  TVPeers* peers = /* ... */;
+
+  // start the consensus engine
+  // ownership of socket, options, and peers is transferred to the engine
+  // the final `false` is `joining_running_session`: pass `true` instead when
+  // this node is joining a session that's already running
+  tv_engine_start(context, &socket, &options, &secret, &peers, &engine, false);
+
+  // send a transaction
+  uint8_t* buffer = NULL;
+  size_t size = 5;
+  tv_transaction_allocate(size, &buffer);
+  memcpy(buffer, "hello", size);
+  tv_transaction_send(engine, buffer, size);
+
+  // start receiving messages
+  tv_message_recv(engine, handle_message_recv, NULL);
+}
+
+int main() {
+  tv_context_new(&context);
+  tv_socket_bind(context, "127.0.0.1:9000", handle_socket_bound, NULL);
+
+  // blocks until all async operations complete
+  tv_free(context);
+
+  return 0;
+}
+```
+
+### Expected Output
+
+Once all three nodes are running, each will reach consensus and print the ordered events:
+
+```
+ :: Configured network for 3 peers
+ :: Initialized runtime
+ :: Bound local socket
+ :: Started the consensus engine
+ > Received SYNC POINT
+ > Received EVENT with 1 transaction(s)
+ > Received EVENT with 1 transaction(s)
+ > Received EVENT with 1 transaction(s)
+```
