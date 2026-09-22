@@ -34,7 +34,9 @@
             "group": "Vertex for Rust",
             "pages": [
               "developers/vertex-rs/index",
-              "developers/vertex-rs/getting-started"
+              "developers/vertex-rs/getting-started",
+              "developers/vertex-rs/api-reference",
+              "developers/vertex-rs/examples"
             ]
           },
           {
