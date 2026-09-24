@@ -1,0 +1,38 @@
+---
+title: "2. The Tashi Solution: Coordination as Infrastructure"
+sidebarTitle: 2. The Tashi Solution
+description: How Tashi's real-time, leaderless edge consensus turns coordination into measurable infrastructure.
+---
+
+## 2.1 The Breakthrough
+
+Tashi introduces a new infrastructure primitive: real-time, leaderless edge consensus.
+
+Traditional systems coordinate through central servers. Blockchains use leader-selection protocols (validators, sequencers) to determine transaction ordering. Tashi eliminates both models. Independent systems reach agreement in milliseconds without trusting a coordinator or waiting for leader selection. They validate outcomes cryptographically. Every coordination event produces a verifiable Proof of Coordination that can be checked by anyone, rewarded based on contribution, or settled on public blockchains when needed.
+
+Coordination becomes a property of the network itself, not a service rented from cloud operators.
+
+This architectural choice has immediate consequences. No single server controls the network. No sequencer determines transaction order. No central authority can be compromised to corrupt the system. Participants run consensus as peers. Byzantine fault tolerance ensures correct operation even when up to f = ⌊(n-1)/3⌋ participants behave maliciously or fail.
+
+The infrastructure operates at the edge, where coordination actually happens. Warehouse robots don't send every decision to the cloud and wait for approval. AI agents don't route every message through central brokers. IoT sensors don't depend on always-on internet connectivity. They coordinate directly with peers, achieving sub-100ms consensus through local agreement.
+
+## 2.2 Coordination as Currency
+
+Each coordination event generates measurable, verifiable value. But payment models differ based on what infrastructure is consumed.
+
+**Tashi's consensus is gasless**. When peers coordinate directly through mesh networks, or "meshnets", they calculate consensus between themselves. No transaction fees. No gas costs. A robot fleet coordinating 1,000 picking decisions doesn't pay 1,000 fees.
+
+**Tashi's DePIN services are metered**. Applications pay only when they consume Lattice infrastructure: discovery services, handshake coordination, NAT traversal, or tunneling bandwidth. Resource Node operators provide this infrastructure and earn Reward Points based on verified work.
+
+**Triangulated validation ensures honesty**. When Resource Nodes participate in meshnets, the peers of the meshnet validate the Resource Node's contribution. If a tunnel claims to have proxied traffic but the peers disagree, the proof fails validation. This organic triangulation prevents Resource Nodes from claiming unearned rewards.
+
+The flow is direct:
+
+- **Coordination**: Peers reach consensus through Vertex, Tashi's consensus engine. The result is a Proof of Coordination (a multi-signed record of agreed state).
+- **Validation**: If Lattice services were used, Orchestrators in Lattice verify the proof against network rules. Peers' signatures validate Resource Node participation. Reputation scores update based on performance.
+- **Reward**: Resource Node operators who provided infrastructure earn Reward Points based on verified contribution. The network measures work precisely through peer attestation.
+- **Settlement**: When coordination results need public finality (token issuance, cross-chain transfers, audit records), Orchestrators authorize Arc to bridge proofs to Ethereum, Solana, Hedera, or any of 20+ integrated blockchains.
+
+The economic insight is simple. Vertex coordination is free. Lattice infrastructure is metered. Applications pay only for services consumed. Operators earn only for work verified by peers. The network grows as demand increases without artificial fee extraction.
+
+Coordination stops being overhead. It becomes measurable infrastructure with its own economics.

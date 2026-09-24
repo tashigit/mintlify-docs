@@ -49,6 +49,18 @@
             ]
           }
         ]
+      },
+      {
+        "group": "Whitepaper",
+        "pages": [
+          "whitepaper/index",
+          "whitepaper/introduction",
+          "whitepaper/the-tashi-solution",
+          {
+            "group": "Architecture",
+            "pages": []
+          }
+        ]
       }
     ],
     "global": {

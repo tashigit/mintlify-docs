@@ -1,0 +1,41 @@
+---
+title: "1. Introduction: The Coordination Bottleneck"
+sidebarTitle: 1. Introduction
+description: Why the infrastructure stack is complete except for coordination, and why existing solutions fall short.
+---
+
+## 1.1 The Infrastructure Stack is Complete; Except for Coordination
+
+The world's digital infrastructure has matured across three foundational layers. Compute is commoditized through cloud providers, edge devices, and serverless platforms. Storage is abundant via distributed systems, IPFS, and decentralized storage networks. Connectivity is ubiquitous with 5G, IoT protocols, and global networks reaching billions of devices.
+
+Yet one primitive remains unsolved: coordination.
+
+When independent systems need to act together in real-time, they still depend on centralized orchestration or leader-based consensus. A warehouse robot fleet coordinates through a central controller. AI inference clusters synchronize via master nodes. IoT sensor networks aggregate data through cloud gateways. These patterns work within a single organization, but they break down across trust boundaries.
+
+The bottleneck isn't compute, storage, or bandwidth. It's the ability for independent systems to reach agreement in milliseconds without trusting a central authority.
+
+## 1.2 Why Coordination Matters Now
+
+An explosion of autonomous systems has made coordination the most critical resource. Projections show that billions of human-operated browsers will soon be joined by trillions of always-on software actors requiring real-time negotiation capabilities [1]. Multi-robot warehouses coordinate picking and sorting tasks. Delivery drone fleets navigate shared airspace. Autonomous vehicle platoons maintain formation at highway speeds. Each requires sub-100ms synchronization between machines that may be owned by different operators, running different software, and operating under different trust models.
+
+AI agent networks amplify this need. Agents require millisecond discovery of peers and their capabilities, similar to DNS but operating at agent timescales. MCP (Model Context Protocol) servers and agent registries must enable real-time service discovery across trust boundaries. Collaborative learning aggregates insights from thousands of models without centralizing raw data. Multi-agent systems negotiate resource allocation in real-time. Privacy-preserving analytics must aggregate results while keeping individual data local.
+
+Industrial IoT deployments face the same constraint. Smart city sensors coordinate traffic management across municipal boundaries. Manufacturing robots synchronize assembly line operations. Connected vehicles share telemetry to optimize routes. All require millisecond-level agreement across systems operating in different trust domains where no single operator should control coordination infrastructure.
+
+The infrastructure exists. The demand is real. The coordination layer is missing.
+
+## 1.3 Current Solutions Fall Short
+
+**Centralized coordination** (AWS, Azure, Google Cloud) works efficiently for single-tenant deployments. A company can run thousands of robots through a central controller with excellent performance. Companies do coordinate across boundaries today through contracts, APIs, and clearinghouse-style integrations. But centralization creates friction. A DNS misconfiguration or cloud outage ripples through every dependent system. Cross-company integrations require custom agreements, API maintenance, and trust in intermediaries. The coordination overhead compounds as participants increase. What works for bilateral integration becomes unworkable for dynamic, many-party coordination.
+
+**Leader-based blockchains** solved a different problem. Ethereum and other Layer 1 networks decentralized value transfer, enabling trustless financial transactions. Layer 2 rollups improved throughput and reduced costs. But consensus takes seconds to minutes. Gas fees make microtransactions uneconomical. Sequencer centralization reintroduces the single point of failure these systems were designed to eliminate.
+
+Blockchains excel at settlement. They provide global agreement on who owns what. But they cannot coordinate real-time actions. A robot fleet cannot wait 12 seconds for block confirmation. An AI inference cluster cannot pay gas fees for every message. Autonomous vehicles cannot coordinate collision avoidance through on-chain transactions. Similarly, existing DNS and HTTPS infrastructure, designed for human-scale web browsing, proves inadequate for agent-scale coordination requiring millisecond discovery and sub-second capability revocation [2].
+
+---
+
+## References
+
+[1] A. Singh *et al.*, "Evolution of AI agent registry solutions: Centralized, enterprise, and distributed approaches," *arXiv preprint*, arXiv:2508.03095v3, Oct. 2025.
+
+[2] R. Raskar *et al.*, "Upgrade or switch: Do we need a next-gen trusted architecture for the Internet of AI agents?" *arXiv preprint*, arXiv:2506.12003v2, Jul. 2025.
