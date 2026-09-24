@@ -1,0 +1,53 @@
+---
+title: The Coordination Problem
+description: Why existing infrastructure fails when independent systems need real-time agreement.
+---
+
+## The Infrastructure Stack is Complete, Except for Coordination
+
+The world's digital infrastructure has matured across three foundational layers:
+
+- **Compute** is commoditized through cloud providers, edge devices, and serverless platforms
+- **Storage** is abundant via distributed systems, IPFS, and decentralized storage networks
+- **Connectivity** is ubiquitous with 5G, IoT protocols, and global networks reaching billions of devices
+
+Yet one primitive remains unsolved: **coordination**.
+
+When independent systems need to act together in real-time, they still depend on centralized orchestration or leader-based consensus. A warehouse robot fleet coordinates through a central controller. AI inference clusters synchronize via master nodes. IoT sensor networks aggregate data through cloud gateways. These patterns work within a single organization, but they break down across trust boundaries.
+
+The bottleneck isn't compute, storage, or bandwidth. It's the ability for independent systems to reach agreement in milliseconds without trusting a central authority.
+
+## Current Solutions Fall Short
+
+### Centralized Coordination
+
+AWS, Azure, and Google Cloud work efficiently for single-tenant deployments. A company can run thousands of robots through a central controller with excellent performance. Companies do coordinate across boundaries today through contracts, APIs, and clearinghouse-style integrations.
+
+But centralization creates friction:
+
+- A DNS misconfiguration or cloud outage ripples through every dependent system
+- Cross-company integrations require custom agreements, API maintenance, and trust in intermediaries
+- The coordination overhead compounds as participants increase
+- What works for bilateral integration becomes unworkable for dynamic, many-party coordination
+
+### Leader-Based Blockchains
+
+Ethereum and other Layer 1 networks decentralized value transfer, enabling trustless financial transactions. Layer 2 rollups improved throughput and reduced costs.
+
+But they cannot coordinate real-time actions:
+
+- Consensus takes seconds to minutes
+- Gas fees make microtransactions uneconomical
+- Sequencer centralization reintroduces the single point of failure these systems were designed to eliminate
+
+Blockchains excel at **settlement**: they provide global agreement on who owns what. But a robot fleet cannot wait 12 seconds for block confirmation. An AI inference cluster cannot pay gas fees for every message. Autonomous vehicles cannot coordinate collision avoidance through on-chain transactions.
+
+### Inadequate Discovery Infrastructure
+
+Similarly, existing DNS and HTTPS infrastructure, designed for human-scale web browsing, proves inadequate for agent-scale coordination requiring millisecond discovery and sub-second capability revocation.
+
+## The Gap
+
+The infrastructure exists. The demand is real. The coordination layer is missing.
+
+This is the problem Tashi solves: real-time, trustless coordination at machine speed.

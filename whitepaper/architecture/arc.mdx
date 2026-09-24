@@ -1,0 +1,40 @@
+---
+title: "3.3 Arc: Where Coordination Meets the World"
+sidebarTitle: 3.3 Arc
+description: Arc's settlement bridge, current implementation, use cases, and design philosophy.
+---
+
+Arc is Tashi's settlement bridge. It connects private meshnet coordination to public blockchain economies. When payment, token issuance, or public finality is needed, Orchestrators transmit verified Proofs of Coordination through Arc to external Layer 1 and Layer 2 networks.
+
+Most coordination stays private. Five warehouse robots coordinating collision avoidance don't need to publish every movement on-chain. AI agents discovering each other's capabilities don't need global consensus. But when coordination results need to become public (settling payments, issuing token rewards, transferring assets, recording outcomes), Arc activates.
+
+### How Arc Works
+
+This is the Arc flow:
+
+1. **Meshnet completes coordination**: Participants reach consensus on some outcome (game session complete, robot task finished, AI agents negotiated terms)
+2. **Proof generated**: The meshnet produces a multi-signed Proof of Coordination cryptographically attesting to what was agreed
+3. **Proof submitted to Lattice**: Orchestrators validate the proof against network rules, verify signatures, check participant eligibility. Note: peers in meshnets are not rewarded for coordination; they're coordinating for their own benefit. Only Resource Nodes that provided Lattice services (discovery, proxy, failover) earn Reward Points for infrastructure contribution.
+4. **Arc authorization**: Orchestrators authorize the appropriate Arc plugin for the target blockchain
+5. **Settlement executed**: Arc handles $TASHI issuance, asset transfers, or cross-chain signaling to the target network
+
+### Current Implementation
+
+Arc exists today as escrow smart contracts deployed on multiple chains, integrated with Vertex through a plugin architecture.
+
+- **Asset bridging**: Lock assets on a Layer 1 or Layer 2 network, load them into a meshnet for coordination, perform the necessary work (in-game trading, multi-party negotiation, robot task execution), then multi-sign settlement back to the blockchain based on meshnet consensus outcomes.
+- **Tested on 20+ networks**: Ethereum, Polygon, Arbitrum, Hedera, and other EVM-compatible chains have validated Arc integrations. Proof of concept deployments demonstrate gaming asset settlement and cross-chain coordination.
+- **$TASHI distribution**: Reward Points earned through Lattice operations convert to $TASHI tokens distributed via Arc transactions. This enables operators to receive blockchain-native value for providing coordination infrastructure.
+
+### Use Cases
+
+- **DeFi integration**: Collateral management and settlement across chains based on coordination outcomes
+- **Cross-chain signaling**: State proofs from private coordination published to public ledgers for transparency or compliance
+- **Gaming assets**: In-game item trades settled on-chain after meshnet consensus validates the trade
+- **Token issuance**: $TASHI rewards distributed through Arc to operator wallets on Solana or other supported chains
+
+### Design Philosophy
+
+Arc is the high-energy bridge. It only activates when coordination needs to become public. This design keeps costs low (most coordination never touches blockchains), latency minimal (no waiting for block confirmation during active coordination), and privacy intact (only final outcomes become public, not intermediate state).
+
+The architecture inverts traditional blockchain thinking. Instead of putting coordination on-chain and paying gas for every operation, Tashi coordinates off-chain and only uses blockchains for what they do best: providing global, immutable, publicly-verified settlement.

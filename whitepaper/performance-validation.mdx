@@ -1,0 +1,13 @@
+---
+title: "6. Performance Validation"
+sidebarTitle: 6. Performance Validation
+description: Consensus latency, throughput, Byzantine fault tolerance, and network reliability in production.
+---
+
+**Consensus latency meets specifications:** Production deployments have achieved 26-103ms consensus depending on configuration and peer count. The multiplayer game operates at approximately 26ms with optimized parameters. Robotics deployments run in the 50-100ms range with larger peer sets and stricter fault tolerance requirements.
+
+**Throughput scales with demand**. Benchmarks show 280,000 transactions per second in latency-optimized configurations and over 1 million TPS in throughput-optimized configurations. Real-world deployments operate well below maximum capacity, providing headroom for growth.
+
+**Byzantine fault tolerance is validated**. Test environments deliberately inject malicious participants. Consensus continues correctly when up to f=(n-1)/3 peers fail or behave adversarially. Safety and liveness guarantees hold under attack conditions.
+
+**Network reliability exceeds 99%**. Lattice infrastructure maintains high availability through geographic distribution, redundant Orchestrators, and automatic failover. Applications experience minimal downtime even when individual Resource Nodes fail.

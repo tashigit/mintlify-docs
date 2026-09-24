@@ -1,0 +1,29 @@
+---
+title: "3.4 The Complete Picture: How the Stack Works Together"
+sidebarTitle: 3.4 How It Works Together
+description: A walkthrough of a warehouse robot coordination scenario across Vertex, Lattice, and Arc.
+---
+
+The three layers compose naturally. A concrete example shows how coordination flows through the system.
+
+### **Scenario**
+
+Five autonomous mobile robots in a warehouse need to coordinate picking tasks for an urgent order. They're owned by different operators, running different software versions, and must coordinate across trust boundaries. The warehouse operator requests coordination infrastructure through Lattice.
+
+- **Step 1: Service Request (Application → Lattice):** The warehouse management system requests a meshnet through a Lattice Orchestrator. Requirements: 5 participants, sub-100ms latency, warehouse location constraints, 10-minute session duration. The Orchestrator selects Resource Nodes based on reputation scores, geographic proximity, and current availability. One Resource Node will act as relay backup if direct peer connections fail.
+- **Step 2: Meshnet Formation (Lattice → Vertex):** The five robots receive connection credentials through Lattice's handshake service. They establish direct peer-to-peer links, performing NAT traversal with UDP hole punching. Approximately 35% of traffic routes through the Resource Node tunnel due to firewall constraints. The robots initialize Vertex consensus optimized for low latency. Byzantine fault tolerance ensures correct operation even if one robot fails or behaves maliciously (tolerates up to f = ⌊(n-1)/3⌋ Byzantine participants).
+- **Step 3: Coordination (Vertex):** Over the next 10 minutes, the robots coordinate 847 picking decisions through Vertex consensus. Each decision involves gossip-about-gossip communication, virtual voting on transaction order, and cryptographic proof generation. No votes are transmitted; participants mathematically derive consensus. Average latency: 31ms per decision. The robots avoid collisions, optimize paths, and hand off items without any participant controlling the network.
+- **Step 4: Proof Generation (Vertex → Lattice):** When the session completes, Vertex produces a Proof of Coordination. This multi-signed cryptographic record attests that five specific participants agreed on 847 transactions in a specific order over 10 minutes. The proof includes participant identities, session parameters, and consensus metadata.
+- **Step 5: Validation (Lattice):** Any Vertex participant can submit the Proof to any Lattice Orchestrator. In practice, multiple peers often submit to different Orchestrators. Lattice itself operates as a meshnet of Orchestrators that synchronize proof updates before validation. Once synchronized, Orchestrators verify signatures, check participant authorization, confirm consensus rules were followed, and validate session parameters. The proof includes peer attestations about Resource Node participation. These peer perspectives, not the Resource Node's own telemetry, are what Orchestrators use to validate tunneling services and other infrastructure claims.
+- **Step 6: Rewards (Lattice):** The Orchestrator issues a reward proposal. The Resource Node operator earns Reward Points based on tunneling bandwidth provided, session duration, and reputation score. The warehouse operator is charged for Lattice infrastructure consumed: handshake services, NAT traversal coordination, and tunneling bandwidth (Vertex consensus itself is gasless). Revenue is distributed to the Resource Node operator, the Foundation, and Orchestrators. Since this operator plans to run more infrastructure, they keep the Reward Points to spend on future capacity.
+- **Step 7: Settlement (Arc - Optional):** In this case, no blockchain settlement is needed. The coordination was private, the payment was internal to Lattice, and the robots completed their work without public record. But if the warehouse operator wanted to issue tokens to the robot operators based on performance, or record the coordination outcome on-chain for audit purposes, the Orchestrator would authorize Arc. The Proof of Coordination would bridge to Ethereum, Solana, or Hedera, triggering smart contract execution for token distribution or state recording.
+
+**The Architecture in Action**
+
+This example demonstrates why the three-layer separation matters:
+
+- **Vertex** handled real-time coordination at the edge. No central server. No leader. 31ms average consensus for time-critical decisions. The robots coordinated directly, keeping operational data private.
+- **Lattice** provided the infrastructure Vertex couldn't provide for itself. Discovery connected participants who didn't know each other in advance. NAT traversal enabled peer connections through firewalls. Relay services ensured connectivity when direct links failed. Validation confirmed the coordination was legitimate. Economic incentives rewarded the Resource Node operator for providing reliable infrastructure.
+- **Arc** remained dormant because this coordination didn't need blockchain settlement. When settlement is required, Arc activates without disrupting the core coordination flow.
+
+Applications compose these layers based on their needs. Private coordination uses Vertex alone. Global availability and economic incentives add Lattice. Public finality or token issuance invoke Arc. The stack adapts to the problem being solved.

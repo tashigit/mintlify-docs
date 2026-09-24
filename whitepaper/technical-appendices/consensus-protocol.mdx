@@ -1,0 +1,76 @@
+---
+title: "Appendix A: Vertex Consensus Protocol"
+sidebarTitle: "Appendix A: Consensus Protocol"
+description: DAG construction, virtual voting, Byzantine fault tolerance, and Proof of Coordination generation.
+---
+
+Vertex achieves sub-100ms Byzantine fault-tolerant consensus through a Directed Acyclic Graph (DAG) structure combined with virtual voting [9, 10]. This appendix provides technical detail on the consensus mechanism.
+
+### DAG Construction
+
+Each participant maintains a local DAG of events. An event is a signed data structure containing:
+
+- Timestamp (logical, not wall-clock)
+- Transactions (application-specific payloads)
+- Self-parent hash (previous event from this participant)
+- Other-parent hashes (references to events from other participants)
+- Creator signature
+
+When a participant creates a new event, it references its own previous event (self-parent) and recent events from other participants (other-parents). These parent references create a causal ordering; an event can only reference events that the creator had already seen when it was created.
+
+Participants exchange events through the gossip protocol. When two participants communicate, they synchronize their DAGs by exchanging events the other hasn't seen. This gossip-about-gossip approach means participants don't just share transactions; they share knowledge about what other participants have seen.
+
+### Virtual Voting
+
+Traditional Byzantine consensus requires multiple rounds of voting messages. Vertex eliminates this overhead through virtual voting. Participants mathematically derive what each other participant would vote based on the DAG structure they've built, without actually transmitting vote messages.
+
+The algorithm works through several stages:
+
+**1. Divide Rounds**: Events are divided into rounds based on their position in the DAG. An event's round is determined by the rounds of its parents and whether it can "see" a supermajority of the previous round's events.
+
+**2. Famous Witnesses**: Each round has designated witness events (the first event created by each participant in that round). Witnesses become "famous" if they can be seen by a supermajority of witnesses in later rounds. Fame is determined through virtual voting where participants calculate what others would vote based on DAG structure.
+
+**3. Consensus Ordering**: Once witnesses are famous, their ancestor events are finalized in batches per round. Unlike protocols that rely on median timestamps for ordering, Vertex uses a deterministic finalization algorithm that preserves causal relationships.
+
+**4. Finality**: Events that reach consensus are final. No reorganization is possible. Applications can act on finalized events with certainty.
+
+### Finalization Ordering Algorithm
+
+Vertex's ordering algorithm guarantees that events are never ordered before their self-ancestors, and typically orders events after their non-self-ancestors. The algorithm processes each round's events as follows:
+
+1. **Identify leaves**: Find events with no children in the set to be finalized
+2. **Sort leaves**: Apply deterministic whitened signature order for consistent tie-breaking across all nodes
+3. **Process recursively**: For each leaf, identify its unique strict ancestors (ancestors not shared with other leaves), process those ancestors first, then finalize the leaf
+4. **Repeat**: Continue until all events in the round are ordered
+
+This approach ensures strict self-ancestor ordering and significantly reduces, but does not eliminate, cases where non-self-ancestors finalize after their descendants. The algorithm is implemented as a heap-based iterative traversal for stack safety and denial-of-service resilience.
+
+Timestamps are assigned only after finalization ordering is complete, preventing timing-based reordering attacks. This makes Vertex well-suited for real-time coordination where latency, consistency, and causality are critical.
+
+### Byzantine Fault Tolerance
+
+Vertex tolerates up to f = ⌊(n-1)/3⌋ Byzantine participants, where n is the total number of participants [11]. This means:
+
+- With 4 participants, 1 can be Byzantine
+- With 7 participants, 2 can be Byzantine
+- With 32 participants, 10 can be Byzantine
+
+Safety and liveness guarantees hold as long as at least 2f+1 participants remain honest and connected. Byzantine participants might:
+
+- Send conflicting events to different participants
+- Delay or withhold messages
+- Claim to have seen events they haven't
+- Attempt to fork the DAG
+
+The virtual voting mechanism ensures that such behaviors cannot break consensus. The algorithm requires witnesses to be seen by a supermajority (>2/3) to become famous, preventing Byzantine minorities from determining consensus outcomes.
+
+### Proof of Coordination Generation
+
+When consensus is reached, the DAG contains enough information to construct a Proof of Coordination. This proof includes:
+
+- The set of participants
+- The agreed ordering of events
+- Signatures from a supermajority of participants on key consensus events
+- Enough DAG structure to verify the consensus independently
+
+The proof is compact (kilobytes, not megabytes) and can be verified by anyone without re-executing the full consensus protocol. Lattice Orchestrators verify these proofs to confirm that consensus was reached correctly before issuing rewards.

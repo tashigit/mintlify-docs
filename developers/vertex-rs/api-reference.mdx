@@ -1,0 +1,37 @@
+---
+title: API Reference
+description: Core types exposed by the tashi-vertex crate.
+---
+
+The `tashi-vertex` crate exposes the following core types. For full documentation including method signatures, see [docs.rs](https://docs.rs/tashi-vertex).
+
+## Types
+
+| Type | Description |
+| --- | --- |
+| `Engine` | Starts and drives the consensus engine -- send transactions and receive ordered messages |
+| `Context` | Runtime context managing async operations and resources |
+| `Socket` | Async network socket bound to a local address |
+| `Options` | Engine configuration (heartbeat, latency, epoch size, threading, etc.) |
+| `Message` | Received message -- either an `Event` or a `SyncPoint` |
+| `Event` | A finalized event carrying consensus-ordered transactions |
+| `Transaction` | Allocated buffer for submitting data to the network |
+| `KeySecret` | Ed25519 secret key for signing (Base58/DER serializable) |
+| `KeyPublic` | Ed25519 public key for verification (Base58/DER serializable) |
+| `Peers` | Set of network participants with addresses and capabilities |
+| `PeerCapabilities` | Per-peer flags: `no_order`, `no_logic`, `public`, `unkickable` |
+| `SyncPoint` | Session management decision from the consensus layer |
+| `Error` / `Result` | Crate error type and its `Result<T>` alias |
+| `base58` | Base58 encoding/decoding utilities |
+
+## Usage Pattern
+
+A typical application follows this flow:
+
+1. **Generate or parse a keypair** using `KeySecret::generate()` or `.parse::<KeySecret>()` (via `FromStr`)
+2. **Configure peers** by creating a `Peers` set with addresses and public keys
+3. **Create a context** with `Context::new()` to manage async operations
+4. **Bind a socket** with `Socket::bind()` to listen on a local address
+5. **Start the engine** with `Engine::start()`, passing the context, socket, options, key, peers, and a `joining_running_session` flag
+6. **Send transactions** with `engine.send_transaction()`
+7. **Receive messages** with `engine.recv_message()`, matching on `Message::Event` or `Message::SyncPoint`

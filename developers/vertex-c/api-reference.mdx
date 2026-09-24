@@ -1,0 +1,107 @@
+---
+title: API Reference
+description: Core types and functions exposed by the Tashi Vertex C header.
+---
+
+The Tashi Vertex C API is exposed through a single header: `tashi-vertex/tashi-vertex.h`.
+
+## Core Types
+
+| Type | Description |
+| --- | --- |
+| `TVEngine` | Starts and drives the consensus engine -- send transactions and receive ordered messages |
+| `TVContext` | Runtime context managing async operations and resources |
+| `TVSocket` | Async network socket bound to a local address |
+| `TVOptions` | Engine configuration (heartbeat, latency, epoch size, threading, persistence, state sharing, etc.) |
+| `TVMessage` | Received message type -- either `TV_MESSAGE_EVENT` or `TV_MESSAGE_SYNC_POINT` |
+| `TVEvent` | A finalized event carrying consensus-ordered transactions |
+| `TVKeySecret` | Ed25519 secret key for signing (Base58/DER serializable) |
+| `TVKeyPublic` | Ed25519 public key for verification (Base58/DER serializable) |
+| `TVPeers` | Set of network participants with addresses and capabilities |
+| `TVPeerCapabilities` | Per-peer flags: `TV_PEER_NO_ORDER`, `TV_PEER_NO_LOGIC`, `TV_PEER_PUBLIC`, `TV_PEER_UNKICKABLE` |
+| `TVSyncPoint` | Session management decision from the consensus layer |
+| `TVResult` | Error code returned by all fallible functions (`TV_OK` on success) |
+| `tv_free()` | Releases memory for all Tashi Vertex-allocated objects |
+
+## Error Codes
+
+All fallible functions return `TVResult`. Check for `TV_OK` on success; see `tashi-vertex/error.h` for the full list of `TV_ERROR_*` codes (invalid/null arguments, DER parse failure, context/socket/engine-start failure, message-receive failure, and oversized transactions).
+
+## Functions
+
+### Context
+
+| Function | Description |
+| --- | --- |
+| `tv_context_new(TVContext** context)` | Create a new runtime context |
+| `tv_free(context)` | Destroy the context (blocks until all async operations complete) |
+
+### Socket
+
+| Function | Description |
+| --- | --- |
+| `tv_socket_bind(context, address, callback, user_data)` | Bind an async socket to a local address |
+
+### Options
+
+| Function | Description |
+| --- | --- |
+| `tv_options_new(&options)` | Initialize a default set of options |
+
+Every tunable parameter has a matching `tv_options_set_*` / `tv_options_get_*` pair -- heartbeat, ack-latency thresholds, dynamic epoch sizing, the inbound RAM budget (`tv_options_set_max_resident_bytes`), event persistence (`tv_options_set_storage_path`, `tv_options_set_strict_replay_verify`), and state sharing (`tv_options_set_enable_state_sharing`, `tv_options_set_epoch_states_to_cache`, `tv_options_set_wait_for_state_report`). See `tashi-vertex/options.h` for the full list.
+
+### Engine
+
+| Function | Description |
+| --- | --- |
+| `tv_engine_start(context, &socket, &options, &secret, &peers, &engine, joining_running_session)` | Start the consensus engine (takes ownership of socket, options, and peers). Pass `joining_running_session = true` when this node is joining a session that's already running |
+| `tv_engine_get_active_creators(engine, out_buf, cap_count, &out_count)` | Read the DER-encoded public keys of the current active voting creators (the live BFT quorum) |
+| `tv_engine_vote_add_node(engine, address, &public_key, capabilities, timeout_secs)` | Vote to re-admit a previously-kicked creator into the active voting set; takes effect once a supermajority of current voters agree |
+| `tv_transaction_allocate(size, &buffer)` | Allocate a buffer for a new transaction |
+| `tv_transaction_send(engine, buffer, size)` | Submit a transaction to the network |
+| `tv_message_recv(engine, callback, user_data)` | Receive the next consensus-ordered message |
+
+### Keys
+
+| Function | Description |
+| --- | --- |
+| `tv_key_secret_generate(&secret)` | Generate a new Ed25519 secret key |
+| `tv_key_secret_to_public(&secret, &public)` | Derive the public key from a secret key |
+| `tv_key_secret_to_der(&secret, der, length)` | Serialize a secret key to DER format |
+| `tv_key_secret_from_der(der, length, &secret)` | Parse a secret key from DER format |
+
+### Peers
+
+| Function | Description |
+| --- | --- |
+| `tv_peers_new(capacity, &peers)` | Create a new empty peer set with the given initial capacity |
+| `tv_peers_insert(peers, address, &public_key, capabilities)` | Add a peer to the set |
+
+### Base58
+
+| Function | Description |
+| --- | --- |
+| `tv_base58_encode(data, data_len, output, &output_len)` | Encode binary data to Base58 |
+| `tv_base58_decode(input, input_len, output, &output_len)` | Decode Base58 to binary data |
+| `tv_base58_encode_length(data_len)` | Calculate the maximum encoded length |
+| `tv_base58_decode_length(input_len)` | Calculate the maximum decoded length |
+
+### Events
+
+| Function | Description |
+| --- | --- |
+| `tv_event_get_created_at(event, &created_at)` | Get the timestamp (nanoseconds since the Unix epoch) at which the event was created |
+| `tv_event_get_transaction_count(event, &count)` | Get the number of transactions in an event |
+| `tv_event_get_transaction(event, index, &transaction, &transaction_size)` | Get the transaction at the given index |
+| `tv_event_get_whitened_signature(event, &signature, &signature_size)` | Get the event's whitened signature -- a high-entropy value all peers compute identically, suitable as a consensus-driven PRNG seed |
+
+## Usage Pattern
+
+A typical application follows this flow:
+
+1. **Create a context** with `tv_context_new()`
+2. **Bind a socket** with `tv_socket_bind()` (async, result delivered via callback)
+3. **In the socket callback**, configure options, keys, and peers, then call `tv_engine_start()`
+4. **Send transactions** with `tv_transaction_allocate()` and `tv_transaction_send()`
+5. **Receive messages** with `tv_message_recv()` (async, result delivered via callback)
+6. **Free resources** -- call `tv_free()` on events, sync points, and the context

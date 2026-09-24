@@ -1,0 +1,32 @@
+---
+title: "3. The Tashi Stack: Vertex → Lattice → Arc"
+sidebarTitle: 3. Architecture
+description: How Vertex, Lattice, and Arc separate concerns across three composable layers.
+---
+
+Tashi's architecture separates concerns across three layers, each solving a distinct coordination challenge:
+
+- ***Vertex* is the peer-to-peer consensus layer that forms agreement.** Peers running Vertex reach consensus in milliseconds through leaderless Byzantine fault-tolerant protocol. The output is a Proof of Coordination.
+- ***Lattice* is the decentralized physical infrastructure layer that scales and rewards consensus.** A global network of nodes validates proofs, assigns work to available capacity, maintains reputation scores, and distributes economic rewards.
+- ***Arc* connects Vertex and Lattice to the world.** When coordination requires public payments, settlement, or signaling, Arc bridges proofs to Ethereum, Solana, Hedera, and 20+ other blockchains.
+
+Each layer operates independently. Applications can use Vertex alone for private coordination. They can add Lattice for global discovery and failover. They can invoke Arc when blockchain settlement is required. The stack composes naturally.
+
+---
+
+## The Layers
+
+<CardGroup cols={2}>
+  <Card title="3.1 Vertex" href="/whitepaper/architecture/vertex">
+    Where Agreement Forms
+  </Card>
+  <Card title="3.2 Lattice" href="/whitepaper/architecture/lattice">
+    Where Coordination Scales
+  </Card>
+  <Card title="3.3 Arc" href="/whitepaper/architecture/arc">
+    Where Coordination Meets the World
+  </Card>
+  <Card title="3.4 The Complete Picture" href="/whitepaper/architecture/how-it-works-together">
+    How the Stack Works Together
+  </Card>
+</CardGroup>

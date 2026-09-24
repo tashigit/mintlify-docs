@@ -16,6 +16,75 @@
           "index",
           "quickstart"
         ]
+      },
+      {
+        "group": "Overview",
+        "pages": [
+          "overview/index",
+          "overview/the-coordination-problem",
+          "overview/the-tashi-solution",
+          "overview/why-now"
+        ]
+      },
+      {
+        "group": "Developers",
+        "pages": [
+          "developers/index",
+          {
+            "group": "Vertex for Rust",
+            "pages": [
+              "developers/vertex-rs/index",
+              "developers/vertex-rs/getting-started",
+              "developers/vertex-rs/api-reference",
+              "developers/vertex-rs/examples"
+            ]
+          },
+          {
+            "group": "Vertex for C",
+            "pages": [
+              "developers/vertex-c/index",
+              "developers/vertex-c/getting-started",
+              "developers/vertex-c/api-reference",
+              "developers/vertex-c/examples"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Whitepaper",
+        "pages": [
+          "whitepaper/index",
+          "whitepaper/introduction",
+          "whitepaper/the-tashi-solution",
+          {
+            "group": "Architecture",
+            "pages": [
+              "whitepaper/architecture/index",
+              "whitepaper/architecture/vertex",
+              "whitepaper/architecture/lattice",
+              "whitepaper/architecture/arc",
+              "whitepaper/architecture/how-it-works-together"
+            ]
+          },
+          "whitepaper/applications-and-markets",
+          "whitepaper/tokenomics",
+          "whitepaper/performance-validation",
+          "whitepaper/governance",
+          "whitepaper/team-and-vision",
+          "whitepaper/conclusion",
+          "whitepaper/acknowledgments",
+          "whitepaper/references",
+          "whitepaper/further-reading",
+          {
+            "group": "Technical Appendices",
+            "pages": [
+              "whitepaper/technical-appendices/index",
+              "whitepaper/technical-appendices/consensus-protocol",
+              "whitepaper/technical-appendices/network-architecture",
+              "whitepaper/technical-appendices/performance-data"
+            ]
+          }
+        ]
       }
     ],
     "global": {
