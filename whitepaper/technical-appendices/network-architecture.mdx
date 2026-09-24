@@ -1,0 +1,68 @@
+---
+title: "Appendix B: Lattice Network Architecture"
+sidebarTitle: "Appendix B: Network Architecture"
+description: Orchestrator responsibilities, Resource Node operations, discovery protocol, and NAT traversal.
+---
+
+Lattice operates as a two-tier network with Orchestrators handling control plane operations and Resource Nodes providing data plane services.
+
+### Orchestrator Responsibilities
+
+Orchestrators run continuously and maintain global network state:
+
+- **Registry management**: Orchestrators maintain a registry of bonded Resource Nodes with their capabilities (supported services, geographic location, compute capacity, network bandwidth), current status (available, busy, offline), and reputation scores.
+- **Job assignment**: When an application requests a meshnet, the Orchestrator selects Resource Nodes based on multiple factors including reputation score, geographic proximity, available capacity, and stake. The specific algorithm and factor weights will be detailed in a separate technical paper on network algorithms.
+- **Validation pipeline**: Orchestrators validate submitted Proofs of Coordination through several checks:
+    1. Signature verification (all participant signatures valid)
+    2. Participant authorization (all participants were registered and authorized for this job)
+    3. Consensus correctness (proof demonstrates supermajority agreement)
+    4. Timestamp validity (session occurred within claimed time window)
+    5. Reputation eligibility (participants had sufficient reputation to participate)
+- **Reward distribution**: Validated proofs trigger reward calculation. Orchestrators issue reward proposals specifying how many Reward Points each participant earned. Multiple Orchestrators co-sign reward proposals to prevent single-Orchestrator manipulation.
+- **Failover coordination**: Orchestrators respond to requests from meshnet participants or assigned Resource Nodes when additional coordination is required. If a meshnet risks losing consensus threshold due to participant failures, Orchestrators can inject backup Resource Nodes to maintain f+1 redundancy.
+
+### Resource Node Operations
+
+Resource Nodes register with Orchestrators by:
+
+1. Staking 10,000 $TASHI
+2. Proving network connectivity (NAT traversal capability, latency to Orchestrators)
+3. Declaring service capabilities
+
+Initial Resource Node services include:
+
+- **Telemetry**: Peer-to-peer connectivity metrics collection
+- **Handshake**: Temporary key-value store for coordinating meshnet metadata and connectivity (also known as "Lobby" in gaming contexts)
+- **Traversal**: Network traversal including NAT traversal
+- **Proxy**: Simple tunneling service to forward traffic between peers in a meshnet (also known as "Tunnel")
+
+Once registered, Resource Nodes:
+
+- Respond to job assignment requests from Orchestrators
+- Execute assigned services
+- Report job completion or failure to Orchestrators
+- Submit periodic availability check-ins to maintain reputation
+
+Resource Nodes earn rewards from:
+
+- Completed jobs (30% of network revenue, pro rata by jobs completed)
+- Availability check-ins (10% of network revenue, pro rata by uptime)
+- Incentive bonuses (20% of network revenue, based on good network and economic behavior)
+
+### Discovery Protocol
+
+Applications discover Lattice through:
+
+1. DNS lookup of Orchestrator endpoints (lattice.tashi.network resolves to geographically distributed Orchestrators)
+2. Initial connection to nearest Orchestrator
+3. Service request specifying requirements (participant count, latency target, duration, geographic constraints)
+4. Orchestrator response with a PASETO token and Resource Node connection details
+5. Direct peer-to-peer connection establishment (with Resource Node proxy as fallback)
+
+### NAT Traversal
+
+Most devices sit behind Network Address Translation (NAT) and cannot accept incoming connections. Lattice handles this through:
+
+- **UDP hole punching**: Orchestrators coordinate simultaneous outbound UDP packet transmission from both peers. This creates temporary openings in NAT tables allowing direct peer-to-peer communication.
+- **Tunneling fallback**: When hole punching fails (symmetric NATs, corporate firewalls), Resource Nodes proxy traffic. Applications only pay for tunneled bandwidth. Current tunnel rates: ~25-35% for PC/console environments, ~60-75% for enterprise/robotics behind strict firewalls.
+- **STUN/TURN integration**: Lattice integrates standard STUN (Session Traversal Utilities for NAT) and TURN (Traversal Using Relays around NAT) protocols, making it compatible with existing WebRTC and real-time communication infrastructure.

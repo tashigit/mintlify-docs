@@ -1,0 +1,89 @@
+---
+title: "Appendix C: Performance Characteristics"
+sidebarTitle: "Appendix C: Performance Data"
+description: Consensus latency benchmarks, throughput measurements, network overhead, and fault tolerance validation.
+---
+
+This appendix provides detailed performance data from benchmarks and production deployments.
+
+### Consensus Latency Benchmarks
+
+Measured on AWS instances (c5.2xlarge, 8 vCPU, 16GB RAM) with simulated network latency:
+
+| Peer Count | Avg Latency | p50 | p95 | p99 | Configuration |
+| --- | --- | --- | --- | --- | --- |
+| 4 | 18ms | 16ms | 25ms | 32ms | Latency-optimized |
+| 8 | 26ms | 24ms | 35ms | 44ms | Latency-optimized |
+| 16 | 52ms | 48ms | 68ms | 89ms | Latency-optimized |
+| 32 | 103ms | 98ms | 128ms | 156ms | Latency-optimized |
+| 8 | 857ms | 820ms | 1100ms | 1350ms | Throughput-optimized |
+
+Real-world Benchmarks:
+
+| Application | Peer Count | Measured Latency | Duration | Events |
+| --- | --- | --- | --- | --- |
+| Horse racing game | 8 | ~26ms | Multiple sessions | 10,000+ consensus events |
+| Unity Boss Room | 4-6 | ~35ms | Devcom demo | 5,000+ consensus events |
+| Robotics pilot | 5 | 50-75ms | 10-minute sessions | 800+ coordination decisions |
+
+### Throughput Benchmarks
+
+Transactions per second (TPS) varies by configuration:
+
+**Latency-optimized** (small batches, fast consensus):
+
+| Peers | TPS |
+| --- | --- |
+| 4 | 145,000 |
+| 8 | 280,000  |
+| 16 | 380,000 |
+| 32 | 420,000 |
+
+**Throughput-optimized** (large batches, slower consensus):
+
+| Peers | TPS |
+| --- | --- |
+| 8 | 1,026,000  |
+| 16 | 1,450,000 |
+| 32 | 1,820,000  |
+
+Real applications operate well below maximum capacity, trading throughput for latency as required.
+
+### Network Overhead
+
+Bandwidth consumption per participant:
+
+| Configuration | Gossip Traffic | Relay Traffic (if needed) | Total Bandwidth |
+| --- | --- | --- | --- |
+| 4 peers, low TPS | ~50 KB/s | ~35 KB/s | ~85 KB/s |
+| 8 peers, medium TPS | ~120 KB/s | ~75 KB/s | ~195 KB/s |
+| 16 peers, high TPS | ~250 KB/s | ~150 KB/s | ~400 KB/s |
+
+Most applications use tunneling for 25-65% of traffic. Peer-to-peer connections (no tunneling) reduce bandwidth costs proportionally.
+
+### Lattice Infrastructure Performance
+
+Orchestrator response times:
+
+- Discovery request → Resource Node assignment: 15-45ms (p95)
+- Proof validation: 5-20ms per proof
+- Reward calculation and distribution: 100-300ms per session
+
+Resource Node availability:
+
+- Overall network uptime: 99.2%
+- Individual high-reputation nodes: 99.7%+
+- Geographic coverage: less than 100ms latency to nearest node for 95% of global population
+
+### Fault Tolerance Validation
+
+Byzantine fault injection tests:
+
+| Test Scenario | Peer Count | Byzantine Count | Consensus Result | Latency Impact |
+| --- | --- | --- | --- | --- |
+| Conflicting events | 8 | 2 | Correct consensus | +15% latency |
+| Delayed messages | 16 | 5 | Correct consensus | +25% latency |
+| Message withholding | 32 | 10 | Correct consensus | +30% latency |
+| Coordinated attack | 8 | 3 (>f) | Consensus halted | N/A (expected) |
+
+Tests confirm that consensus continues correctly with up to f Byzantine participants, but halts (maintaining safety) when Byzantine count exceeds f.

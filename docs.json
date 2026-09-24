@@ -77,7 +77,12 @@
           "whitepaper/further-reading",
           {
             "group": "Technical Appendices",
-            "pages": []
+            "pages": [
+              "whitepaper/technical-appendices/index",
+              "whitepaper/technical-appendices/consensus-protocol",
+              "whitepaper/technical-appendices/network-architecture",
+              "whitepaper/technical-appendices/performance-data"
+            ]
           }
         ]
       }
