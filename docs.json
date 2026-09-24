@@ -58,7 +58,13 @@
           "whitepaper/the-tashi-solution",
           {
             "group": "Architecture",
-            "pages": []
+            "pages": [
+              "whitepaper/architecture/index",
+              "whitepaper/architecture/vertex",
+              "whitepaper/architecture/lattice",
+              "whitepaper/architecture/arc",
+              "whitepaper/architecture/how-it-works-together"
+            ]
           }
         ]
       }

@@ -1,0 +1,41 @@
+---
+title: "3.1 Vertex: Where Agreement Forms"
+sidebarTitle: 3.1 Vertex
+description: Vertex's DAG-based gossip-about-gossip protocol, virtual voting, and performance characteristics.
+---
+
+Vertex is Tashi's consensus engine. It delivers sub-100ms Byzantine fault-tolerant consensus through a Directed Acyclic Graph (DAG) architecture that eliminates leaders, sequencers, and centralized ordering.
+
+## How Vertex Works
+
+- **Gossip-about-gossip**: Peers exchange signed events containing transactions or state updates. Each event references the peer's own previous event (self-parent) and recent events from other peers (other-parents), building a causally-ordered DAG. Participants don't just gossip what they know, but also gossip how they've learned from others. This happens asynchronously. Peers gossip as fast as their network allows. Each peer independently calculates the order of events from the DAG structure they've built. The mathematics ensures all honest peers converge on the same ordering without synchronizing their calculations.
+- **Virtual voting**: No votes are actually transmitted. Instead, participants mathematically derive what everyone else would vote based on the DAG structure they've built. This eliminates an entire round of network communication.
+- **Fair ordering**: Events are ordered by collective network witness, not by whoever happened to receive them first or which validator was selected as leader. This inherent property prevents front-running and provides censorship resistance.
+- **Cryptographic proofs**: When consensus is reached, the final sequence produces a Proof of Coordination. This multi-signed record proves that a specific set of peers agreed on a specific order of events at a specific time. Anyone can verify the proof cryptographically.
+
+## Performance Characteristics
+
+Vertex's performance depends on configuration. During benchmarking, Vertex was tested in various scenarios, optimized for both low latency and later for high throughput:
+
+- Optimized for **latency**, it achieves 26ms consensus with 8 peers and 103ms with 32 peers. Throughput in this mode reaches 280,000 transactions per second.
+- Optimized for **throughput**, Vertex handles 1.026 million transactions per second at 857ms latency.
+
+Applications choose the trade-off that matches their requirements. A multiplayer horse racing game built on Vertex achieved approximately 26ms consensus latency. Unity's Boss Room demo showcased deterministic multiplayer coordination at Devcom 2023. These proofs of concept validated the technology under real user behavior and network conditions, not just controlled benchmarks.
+
+## Key Technical Features
+
+- **Leaderless**: No single node controls transaction ordering or block production. Every peer participates equally in consensus.
+- **Byzantine fault tolerant**: The network operates correctly even when up to one-third of peers fail arbitrarily or act maliciously. Safety and liveness guarantees hold under adversarial conditions.
+- **Fairness**: Consensus ordering is mathematically fair. No participant can systematically front-run others or censor transactions.
+- **Fast finality**: Once an event is finalized in the DAG, it cannot be reverted. No probabilistic finality or reorganization risk.
+
+## Meshnets: Vertex in Action
+
+When Vertex is applied to a specific coordination problem, it creates a meshnet, a peer-to-peer network where participants are both users and consensus nodes. This architecture enables several properties traditional systems cannot provide:
+
+- **Gasless coordination**: Participants pay for compute and bandwidth, not per-transaction gas fees. A robot coordinating 1000 movements per second doesn't pay 1000 transaction fees.
+- **Edge processing**: Consensus happens where the work happens. Robots in a warehouse coordinate locally. AI agents running on edge devices reach agreement through local networks without routing every decision through cloud servers.
+- **Private by default**: Only the final Proof of Coordination needs to leave the meshnet. Internal state, individual transactions, and intermediate consensus rounds remain private.
+- **Application-specific logic**: Each meshnet can implement custom rules. A robot fleet has different coordination requirements than an AI agent network.
+
+The meshnet abstraction makes Vertex accessible. Developers define what needs to coordinate and Vertex handles consensus.

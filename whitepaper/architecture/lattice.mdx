@@ -1,0 +1,70 @@
+---
+title: "3.2 Lattice: Where Coordination Scales"
+sidebarTitle: 3.2 Lattice
+description: Lattice's node architecture, network services, economic model, and reputation system.
+---
+
+Lattice is Tashi's global coordination substrate. It's a Decentralized Physical Infrastructure Network (DePIN) of nodes providing discovery, routing, validation, and reliability for thousands of independent meshnets.
+
+Where Vertex handles local consensus, Lattice handles global operations. Orchestrators validate Proofs of Coordination. Resource Nodes provide tunneling services, inject failover capacity, and execute application-specific jobs. The economic model rewards reliable infrastructure. Reputation algorithms ensure quality.
+
+## Node Architecture
+
+Two node types divide responsibilities:
+
+**Orchestrators** (control plane):
+
+- Accept service requests from applications
+- Match jobs to available Resource Nodes based on capacity, location, and reputation
+- Audit live meshnet sessions for correctness
+- Validate submitted Proofs of Coordination against consensus rules
+- Maintain reputation scores for all participants
+- Issue and co-sign reward proposals
+- Inject backup nodes when meshnets risk losing consensus threshold (failover)
+
+**Resource Nodes** (execution plane):
+
+- Execute services assigned by Orchestrators
+- Provide relay and proxy services for meshnets
+- Act as failover participants when consensus threshold is at risk
+- Run application-specific services (MQTT brokers, agent discovery, robot coordination)
+- Earn rewards based on performance, availability, and reputation
+
+Orchestrators don't process application data. They coordinate and validate. Resource Nodes handle the actual work. This separation enables specialization and economic efficiency.
+
+## Network Services
+
+Lattice provides several critical services that individual meshnets cannot provide for themselves:
+
+- **Discovery and routing**: Applications find available capacity without knowing node identities in advance. Orchestrators maintain an address book of bonded Resource Nodes with their capabilities and locations.
+- **NAT traversal**: Most devices sit behind firewalls and cannot accept direct connections. Lattice provides hole punching and tunneling fallback to connect participants.
+- **Validation**: Orchestrators verify Proofs of Coordination from completed meshnets, confirming that Resource Nodes successfully completed assigned jobs. The validation is triangulated: peers in the meshnet attest to Resource Node participation through their signatures on coordination events. A tunnel cannot claim credit for traffic the peers didn't actually route through it. This organic triangulation prevents fraudulent reward claims.
+- **Telemetry**: Network-wide latency measurements and route optimization inform job assignment decisions.
+- **Handshake services**: Short-term key-value stores enable meshnet participants to exchange connection details before forming peer-to-peer links.
+- **Proxy services**: When direct peer-to-peer connections fail, Resource Nodes proxy traffic. Applications only pay for proxied traffic (typically 25-65% of total volume).
+
+## Economic Model
+
+Lattice's economics are straightforward. Applications pay for network services. Revenue flows to operators who provided infrastructure in the form of Reward Points. The split is transparent.
+
+Additionally, $TASHI is the token that acts as both a security mechanism and a selection factor for the DePIN.
+
+An incentive pool rewards specific behaviors that strengthen the network. Operators who spend earned Reward Points on network services receive bonuses. Operators who convert Reward Points to $TASHI and stake that $TASHI receive bonuses. Operators who handle peak-demand jobs receive bonuses. The incentives align individual profit with network health.
+
+## Reputation and Selection
+
+Not all operators are equal. Reputation scores determine job assignment probability. The system is designed to be failure-tolerant while preventing gaming.
+
+New nodes start with neutral reputation (1.0 on a 0.0-2.0 scale). Successful jobs increase reputation. Failed jobs decrease it. Honest nodes with more successful jobs than failures build reputation above 1.0, improving their chances of receiving high-value assignments.
+
+Slashing only activates when reputation drops below 1.0. This allows legitimate infrastructure issues (ISP outages, power failures) to decrease reputation slightly without triggering financial penalties. But sustained poor performance or malicious behavior drives reputation toward zero, triggering progressive slashing of staked collateral.
+
+Orchestrators use multi-factor scoring for job assignment, weighted by job requirements:
+
+- Reputation score (primary weight for most jobs)
+- Geographic proximity (critical for tunneling services, less important for validation)
+- Current capacity and load
+- Stake amount (signals commitment)
+- Historical performance on similar job types
+
+This creates a competitive market. Operators with better infrastructure and higher reliability earn more assignments and higher rewards.
