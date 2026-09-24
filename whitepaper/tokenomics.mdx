@@ -1,0 +1,113 @@
+---
+title: "5. Economic Model & Tokenomics"
+sidebarTitle: 5. Tokenomics
+description: Revenue splits, payment interfaces, token utility, allocation, vesting, staking, and incentive mechanisms.
+---
+
+Tashi's economic model aligns network growth with participant incentives. Applications pay for coordination infrastructure. Operators earn rewards for providing reliable service. The $TASHI token enables this value exchange while creating mechanisms for quality control, long-term alignment, and sustainable network economics.
+
+### 5.1 The Coordination Economy
+
+Coordination infrastructure generates measurable value. Every meshnet session consumes resources: compute for consensus, bandwidth for gossip communication, storage for proofs, and tunneling capacity when direct peer connections fail. Resource Node operators invest in hardware, network connectivity, and uptime. The economic model compensates them based on verified contribution.
+
+Revenue flows from applications to infrastructure providers through a transparent split:
+
+- **60% to Resource Node Operators**: The majority of revenue flows to operators who provide the actual infrastructure. This allocation subdivides into performance-based components:
+    - **30%** based on successful job completions (pro rata by jobs completed)
+    - **10%** based on availability (pro rata by uptime check-ins)
+    - **20%** allocated to incentive bonuses for healthy network and economic behaviors
+- **30% to Foundation**: Network operations, protocol development, strategic partnerships, token buybacks, and ecosystem growth initiatives. This allocation also covers blockchain transaction fees for Arc settlement and $TASHI distribution.
+- **10% to Orchestrator Operators**: Compensation for running coordination infrastructure (discovery, routing, validation, reputation management, failover injection).
+
+This revenue distribution creates immediate economic utility for the $TASHI token. As coordination volume increases, more value flows through the network. Operators earn based on performance. The Foundation secures resources for long-term development. The economic flywheel begins turning.
+
+### 5.2 Payment Interfaces
+
+Lattice operates in USD. Applications access coordination infrastructure through two interfaces:
+
+- **Tashi Gateway (Developer-Friendly)**: A centralized front-end accepting credit card or ACH payments via Stripe. Developers receive API keys and pay in familiar fiat currency. The gateway handles settlement with Lattice under the hood, treating coordination services as cost of goods sold. This is the default interface for most developers.
+- **Direct Lattice (Decentralized)**: Developers pay Lattice directly in USDC. No API keys required. Payment generates a job authorization token (PASETO) that grants access to coordination services. This interface enables fully decentralized applications without centralized intermediaries.
+
+Both interfaces fund the same infrastructure. Revenue flows to Treasury as USD-denominated flows. Reward Points issued to operators are backed by this USD reserve at a 100:1 ratio (100 Reward Points : $1 USD).
+
+### 5.3 Token Utility & Mechanics
+
+The $TASHI token serves specific functions within the network:
+
+- **Staking requirement**: Resource Nodes must stake 10,000 $TASHI to participate. This stake signals commitment, enables reputation-based slashing for poor performance, and aligns operator incentives with network health. There are no platform fees on staking.
+- **Operator rewards**: Operators earn Reward Points (backed by USD) for completed jobs, uptime, and incentive bonuses. They convert Reward Points to $TASHI tokens to withdraw value from the network. This conversion creates sustainable token demand as network usage grows.
+- **Pooled staking**: $TASHI holders who don't run infrastructure can stake without registering nodes. Their stake enters a pool that algorithmically allocates to high-reputation unbonded nodes. Pool participants earn rewards when supported nodes complete jobs successfully, enabling passive participation without selecting specific operators.
+- **Governance**: Token holders vote on protocol parameters, treasury allocation, and network upgrades. Governance weight scales with stake and reputation.
+
+The token design maintains clear separation. Applications pay in USD or USDC; they don't need to acquire $TASHI to use coordination services. Operators earn Reward Points backed by USD and convert to $TASHI to extract value. This ensures developer adoption isn't gated by token acquisition while maintaining clear token utility for infrastructure operators. There's no inflation beyond the fixed 10 billion supply.
+
+### 5.4 Token Allocation & Vesting
+
+Total supply is fixed at 10 billion $TASHI tokens. The smallest unit, the ***SaTASHI***, is equivalent to 0.000000001 TASHI. The allocation balances immediate network bootstrapping with long-term sustainability:
+
+| Allocation | Tokens | % | TGE Unlock | Cliff | Vesting |
+| --- | --- | --- | --- | --- | --- |
+| Seed Investors | 1.0B | 10% | 5% (50M) | 6 months | 18 months linear |
+| Community | 500M | 5% | 100% (500M) | None | Immediate |
+| Testnet Rewards | 500M | 5% | 10% (50M) | Discretionary | Discretionary |
+| Node Operator Rewards | 2.5B | 25% | 0% | None | 48 months linear |
+| Demand Ecosystem | 1.0B | 10% | 0% | None | 48 months linear |
+| Foundation | 2.5B | 25% | 40% (1B) | None | 48 months linear |
+| Team | 1.5B | 15% | 0% | 12 months | 24 months linear |
+| Advisors | 500M | 5% | 0% | 12 months | 24 months linear |
+| **Total** | **10B** | **100%** | **16% (1.6B)** |  |  |
+
+**Initial circulating supply**: 1.6 billion tokens (16% of total supply) at Token Generation Event.
+
+The allocation prioritizes network operators (25% for Node Rewards) and long-term protocol development (25% for Foundation). The largest allocations have the longest vesting periods, ensuring that early stakeholders remain aligned with network success over multi-year timescales.
+
+Team and Advisor allocations include 12-month cliffs with 24-month linear vesting. This structure ensures that contributors remain engaged through critical growth phases. Seed investors vest over 18 months with a 6-month cliff, aligning early capital with network traction.
+
+The Community and Testnet Rewards allocations enable immediate ecosystem bootstrapping. Community tokens support partnerships, ecosystem development, and strategic initiatives. Testnet rewards compensate early node operators who validated the network before mainnet launch.
+
+### 5.5 Staking, Reputation & Quality Control
+
+Network quality depends on operator reliability. The staking and reputation system creates economic incentives for honest behavior and high-quality service.
+
+- **Staking requirement**: Every Resource Node stakes 10,000 $TASHI. This stake is subject to slashing if reputation falls below neutral (1.0 on a 0.0-2.0 scale). Operators can increase stake to signal higher commitment, which factors into job assignment probability.
+- **Reputation mechanics**: New nodes start with neutral reputation (1.0). Each successful job increases reputation slightly. Each failed job decreases reputation slightly. Over time, honest operators build reputation significantly above 1.0, while unreliable or malicious operators fall toward 0.0.
+- **Slashing triggers below 1.0**: Reputation above 1.0 incurs no slashing. This tolerance allows legitimate infrastructure issues (ISP outages, power failures, hardware upgrades) without financial penalty. But sustained poor performance drives reputation below 1.0, triggering progressive slashing of staked collateral. At reputation 0.0, the entire stake is slashed and the node is removed from the network.
+- **Job assignment probability**: Orchestrators use multi-factor scoring to assign jobs to available Resource Nodes:
+    - Reputation score (primary weight)
+    - Geographic proximity to job requirements
+    - Current capacity and load
+    - Stake amount (higher stake signals commitment)
+    - Historical performance on similar jobs
+
+    This creates a competitive market. Operators with better infrastructure, higher reliability, and stronger reputation earn more assignments and higher rewards.
+
+- **Staking and bonding**: Operators stake $TASHI to bond their registered nodes. Each 10,000 $TASHI bonds one node, making it available for job assignments. If an operator stakes more than the minimum required, the excess is divided evenly across their bonded nodes, improving selection odds through a diminishing returns multiplier against reputation. For example, an operator with 50,000 $TASHI and 2 registered nodes has both bonded at 25,000 each; better selection odds than the minimum 10,000.
+- **Pooled staking**: Token holders who want to participate economically without running infrastructure can stake without registering nodes. Their stake enters a pool that algorithmically allocates to high-reputation unbonded nodes across the network. This allocation prioritizes nodes with the strongest track records, automatically matching capital with reliable infrastructure. Pool participants earn rewards proportional to their contribution when the nodes their stake supports complete jobs successfully.
+
+### 5.6 Incentive Mechanisms
+
+Twenty percent (20%) of operator revenue flows to incentive bonuses, which are used to reward specific behaviors that strengthen the network:
+
+- **Network loyalty bonus**: Operators who spend earned Reward Points on additional coordination services (running more jobs, increasing capacity) receive bonus multipliers on those rewards.
+- **Staking bonus**: Operators who convert Reward Points to $TASHI and stake (rather than immediately selling) receive conversion bonuses. This mechanism increases circulating stake and reduces sell pressure.
+- **Peak demand bonus**: Jobs are tagged as "peak" when demand in a region is high for a specific job type. Operators who handle these peak jobs receive premium rates. This incentivizes operators to maintain capacity in underserved regions and respond to demand spikes, encouraging global coverage where it's needed most.
+
+The incentive pool is not pre-allocated. It accumulates from the 20% allocation within the 60% operator revenue share. Orchestrators distribute incentive bonuses based on observed network behavior. This creates a dynamic reward system that adapts to changing network needs without requiring governance votes for every adjustment.
+
+### 5.7 Token Distribution Timeline
+
+The vesting schedule creates predictable token unlock over 48 months:
+
+- **Month 0 (TGE)**: **1.6B** tokens circulating (16%)
+    - **500M** Community (immediate)
+    - **50M** Testnet (10% unlock)
+    - **50M** Seed (5% unlock)
+    - **1B** Foundation (40% unlock)
+- **Months 1-6**: Seed cliff period; Foundation begins linear vest; Node and Dev Rewards begin accrual
+- **Month 6**: Seed investors begin 18-month linear vesting
+- **Month 12**: Team and Advisors begin 24-month linear vesting after cliff
+- **Month 48**: All allocations fully vested
+
+Node Operator Rewards accrue based on actual network usage. If coordination volume is low, fewer tokens distribute. If volume is high, more tokens flow to operators. This demand-responsive distribution ensures that token supply increases in proportion to network utility.
+
+Foundation tokens vest linearly over 48 months but can be allocated to strategic initiatives before full vesting. This flexibility enables the Foundation to respond to partnership opportunities, ecosystem development needs, and market conditions without waiting for predetermined unlock schedules.

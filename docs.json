@@ -65,6 +65,19 @@
               "whitepaper/architecture/arc",
               "whitepaper/architecture/how-it-works-together"
             ]
+          },
+          "whitepaper/applications-and-markets",
+          "whitepaper/tokenomics",
+          "whitepaper/performance-validation",
+          "whitepaper/governance",
+          "whitepaper/team-and-vision",
+          "whitepaper/conclusion",
+          "whitepaper/acknowledgments",
+          "whitepaper/references",
+          "whitepaper/further-reading",
+          {
+            "group": "Technical Appendices",
+            "pages": []
           }
         ]
       }
